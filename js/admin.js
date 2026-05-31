@@ -36,7 +36,7 @@ function loadAdminData() {
       { id: 2, name: 'Ana Smith', phone: '+995 577 200 300', source: 'Instagram', service: 'Consultation', status: 'called', date: '30.05.2025', comment: 'Interested in X1C', nextAction: 'Send price list' },
       { id: 3, name: 'ზაზა ბ.', phone: '+995 555 300 400', source: 'Telegram', service: 'Repair', status: 'done', date: '29.05.2025', comment: 'შეკეთება დასრულდა', nextAction: '' },
     ],
-    products: JSON.parse(JSON.stringify(PRODUCTS)),
+    products: typeof PRODUCTS !== 'undefined' ? JSON.parse(JSON.stringify(PRODUCTS)) : [],
     banners: [
       { id: 1, title_ka: 'Bambu Lab X1 Carbon — საუკეთესო CoreXY პრინტერი', title_en: 'Bambu Lab X1 Carbon — Best CoreXY Printer', subtitle_ka: 'ახლა განვადებით 12 თვეზე', subtitle_en: 'Now available on 12-month installment', btnText_ka: 'ყიდვა', btnText_en: 'Buy now', btnLink: '?page=product&id=1', bg: 'linear-gradient(135deg,#1a56db,#3b82f6)', active: true },
       { id: 2, title_ka: 'Bambu Lab A1 Mini — ბეჭდვა ყველასთვის', title_en: 'Bambu Lab A1 Mini — Printing for everyone', subtitle_ka: 'დამწყებებისთვის საუკეთესო არჩევანი', subtitle_en: 'Best choice for beginners', btnText_ka: 'გაიგეთ მეტი', btnText_en: 'Learn more', btnLink: '?page=product&id=3', bg: 'linear-gradient(135deg,#7c3aed,#a855f7)', active: false },
@@ -74,7 +74,14 @@ function saveAdminData(data) {
   localStorage.setItem('admin_data', JSON.stringify(data));
 }
 
-let AD = loadAdminData(); // Admin Data shortcut
+let AD = loadAdminData();
+// Merge product catalog after all scripts loaded
+window.addEventListener('DOMContentLoaded', function() {
+  if (typeof PRODUCTS !== 'undefined' && AD.products.length === 0) {
+    AD.products = JSON.parse(JSON.stringify(PRODUCTS));
+    saveAdminData(AD);
+  }
+});
 
 /* ── ADMIN SECTION STATE ── */
 let adminSection = 'dashboard';

@@ -13,17 +13,30 @@
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Outfit,sans-serif;color:#5a6478">
+      <div style="text-align:center">
+        <div style="font-size:48px;margin-bottom:1rem">🖨️</div>
+        <div style="font-size:18px;font-weight:700">Loading 3DHub.ge...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load order matters: core → pages → filaments → admin → init -->
   <script src="js/core.js"></script>
   <script src="js/pages.js"></script>
   <script src="js/filaments.js"></script>
   <script src="js/admin.js"></script>
+
   <script>
+    /* ── ROUTER ── */
     function renderPage() {
       const page = getCurrentPage();
       const app = document.getElementById('app');
+      if (!app) return;
       document.documentElement.lang = state.lang;
 
+      // Admin — no nav/footer
       if (page === 'admin') {
         document.title = '3DHub.ge Admin';
         app.innerHTML = renderAdmin();
@@ -31,39 +44,52 @@
       }
 
       let content = '';
-      switch (page) {
-        case 'home':            content = renderHome(); break;
-        case 'catalog':         content = renderCatalog(); break;
-        case 'filament':        content = renderFilamentCatalog(); break;
-        case 'filament_detail': content = renderFilamentDetail(); break;
-        case 'product':         content = renderProduct(); break;
-        case 'cart':            content = renderCart(); break;
-        case 'checkout':        content = renderCheckout(); break;
-        case 'services':        content = renderServices(); break;
-        case 'blog':            content = renderBlog(); break;
-        case 'support':         content = renderSupport(); break;
-        case 'wishlist':        content = renderWishlist(); break;
-        case 'search':          content = renderSearch(); break;
-        default:                content = renderSimplePage(page); break;
+      try {
+        switch (page) {
+          case 'home':            content = renderHome(); break;
+          case 'catalog':         content = renderCatalog(); break;
+          case 'filament':        content = renderFilamentCatalog(); break;
+          case 'filament_detail': content = renderFilamentDetail(); break;
+          case 'product':         content = renderProduct(); break;
+          case 'cart':            content = renderCart(); break;
+          case 'checkout':        content = renderCheckout(); break;
+          case 'services':        content = renderServices(); break;
+          case 'blog':            content = renderBlog(); break;
+          case 'support':         content = renderSupport(); break;
+          case 'wishlist':        content = renderWishlist(); break;
+          case 'search':          content = renderSearch(); break;
+          default:                content = renderSimplePage(page); break;
+        }
+      } catch(e) {
+        console.error('renderPage error:', e);
+        content = '<div class="container" style="padding:4rem 0;text-align:center"><div style="font-size:48px">⚠️</div><h2>შეცდომა / Error</h2><pre style="color:red;font-size:12px;text-align:left;background:#fff5f5;padding:1rem;border-radius:8px;margin-top:1rem">' + e.message + '</pre><button class="btn btn-primary" onclick="navigate(\'home\')" style="margin-top:1rem">← მთავარი</button></div>';
       }
 
+      // Page titles
       const prod = PRODUCTS.find(p => p.id === parseInt(getParam('id')));
+      const ftype = decodeURIComponent(getParam('type') || '');
+      const fcolor = decodeURIComponent(getParam('color') || '');
       const titles = {
         home: '3DHub.ge — 3D პრინტერები საქართველოში',
         catalog: '3DHub.ge — კატალოგი',
         filament: '3DHub.ge — BambuLab ფილამენტი',
-        filament_detail: `3DHub.ge — BambuLab ${decodeURIComponent(getParam('type')||'')} ${decodeURIComponent(getParam('color')||'')}`,
+        filament_detail: ftype && fcolor ? `3DHub.ge — BambuLab ${ftype} ${fcolor}` : '3DHub.ge — ფილამენტი',
         cart: '3DHub.ge — კალათა',
         checkout: '3DHub.ge — შეკვეთა',
         services: '3DHub.ge — 3D სერვისები',
+        blog: '3DHub.ge — ბლოგი',
+        support: '3DHub.ge — მხარდაჭერა',
       };
-      document.title = page === 'product' && prod ? `3DHub.ge — ${prod.name}` : (titles[page] || '3DHub.ge');
+      document.title = (page === 'product' && prod) ? `3DHub.ge — ${prod.name}` : (titles[page] || '3DHub.ge');
 
-      app.innerHTML = renderNav() + `<main>${content}</main>` + renderFooter();
+      app.innerHTML = renderNav() + '<main>' + content + '</main>' + renderFooter();
       updateCartCount();
     }
 
+    // Handle browser back/forward
     window.addEventListener('popstate', renderPage);
+
+    // Start
     renderPage();
   </script>
 </body>
