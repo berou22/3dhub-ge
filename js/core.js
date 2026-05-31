@@ -274,7 +274,7 @@ function renderNav() {
       <a class="logo" onclick="navigate('home')">3D<span>Hub</span><sub>.ge</sub></a>
       <div class="nav-links" id="nav-links">
         <a onclick="navigate('catalog','type=printers')" class="${getCurrentPage()==='catalog'?'active':''}">${l.navPrinters}</a>
-        <a onclick="navigate('catalog','type=filament')">${l.navFilament}</a>
+        <a onclick="navigate('filament')" class="${getCurrentPage()==='filament'||getCurrentPage()==='filament_detail'?'active':''}">${l.navFilament}</a>
         <a onclick="navigate('catalog','type=accessories')">${l.navAcc}</a>
         <a onclick="navigate('services')" class="${getCurrentPage()==='services'?'active':''}">${l.navServices}</a>
         <a onclick="navigate('blog')">${l.navBlog}</a>

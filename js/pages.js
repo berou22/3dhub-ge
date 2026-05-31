@@ -40,13 +40,13 @@ function renderHome() {
       <div class="cats-grid">
         ${[
           {icon:'ti-printer',name:l.cat1,count:'48',type:'printers'},
-          {icon:'ti-cylinder',name:l.cat2,count:'120+',type:'filament'},
+          {icon:'ti-cylinder',name:l.cat2,count:'120+',type:'filament_page'},
           {icon:'ti-settings-2',name:l.cat3,count:'200+',type:'parts'},
           {icon:'ti-tool',name:l.cat4,count:'150+',type:'accessories'},
           {icon:'ti-layers-difference',name:l.cat5,count:state.lang==='ka'?'შეკვეთაზე':'On demand',type:'service-print'},
           {icon:'ti-scan',name:l.cat6,count:state.lang==='ka'?'პროფ.':'Pro',type:'service-scan'},
         ].map(c => `
-        <div class="cat-card" onclick="${c.type.startsWith('service')?`navigate('services')`:`navigate('catalog','type=${c.type}')`}">
+        <div class="cat-card" onclick="${c.type.startsWith('service')?`navigate('services')`:c.type==='filament_page'?`navigate('filament')`:`navigate('catalog','type=${c.type}')`}">
           <div class="cat-icon"><i class="ti ${c.icon}"></i></div>
           <div class="cat-name">${c.name}</div>
           <div class="cat-count">${c.count}</div>
