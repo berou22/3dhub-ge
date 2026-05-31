@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3DHub.ge — 3D პრინტერები და სერვისი საქართველოში</title>
+  <meta name="description" content="3D პრინტერების, ფილამენტის და 3D ბეჭდვის სერვისების ონლაინ მაღაზია საქართველოში. Bambu Lab, Creality ოფიციალური დილერი.">
+  <meta property="og:title" content="3DHub.ge — 3D Printers & Services in Georgia">
+  <meta property="og:description" content="Online store for 3D printers, filament and 3D printing services in Georgia.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://3dhub.ge">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Georgian:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div id="app">
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Outfit,sans-serif;color:#5a6478">
+      <div style="text-align:center">
+        <div style="font-size:48px;margin-bottom:1rem">🖨️</div>
+        <div style="font-size:18px;font-weight:700">Loading 3DHub.ge...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script src="js/pages.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    function renderPage() {
+      const page = getCurrentPage();
+      const isAdmin = page === 'admin' || page.startsWith('admin-');
+      const app = document.getElementById('app');
+      document.documentElement.lang = state.lang;
+
+      // Admin page — no nav/footer wrapper
+      if (isAdmin) {
+        document.title = '3DHub Admin Panel';
+        app.innerHTML = renderAdmin();
+        return;
+      }
+
+      // Build page content
+      let content = '';
+      switch (page) {
+        case 'home':       content = renderHome(); break;
+        case 'catalog':    content = renderCatalog(); break;
+        case 'product':    content = renderProduct(); break;
+        case 'cart':       content = renderCart(); break;
+        case 'checkout':   content = renderCheckout(); break;
+        case 'services':   content = renderServices(); break;
+        case 'blog':       content = renderBlog(); break;
+        case 'support':    content = renderSupport(); break;
+        case 'wishlist':   content = renderWishlist(); break;
+        case 'search':     content = renderSearch(); break;
+        default:           content = renderSimplePage(page); break;
+      }
+
+      // Set page title
+      const titles = {
+        home: '3DHub.ge — 3D პრინტერები საქართველოში',
+        catalog: `3DHub.ge — ${LANG[state.lang].catPageTitle}`,
+        product: `3DHub.ge — ${PRODUCTS.find(p=>p.id===parseInt(getParam('id')))?.name||'Product'}`,
+        cart: `3DHub.ge — ${LANG[state.lang].cartTitle}`,
+        checkout: `3DHub.ge — ${LANG[state.lang].checkoutTitle}`,
+        services: `3DHub.ge — ${LANG[state.lang].serviceTitle}`,
+      };
+      document.title = titles[page] || '3DHub.ge';
+
+      app.innerHTML = renderNav() + `<main>${content}</main>` + renderFooter();
+      updateCartCount();
+      initFAQs();
+    }
+
+    function initFAQs() {
+      // FAQs are handled via inline onclick — nothing extra needed
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', renderPage);
+    // Initial render
+    renderPage();
+  </script>
+</body>
+</html>
