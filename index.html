@@ -8,12 +8,11 @@
   <meta property="og:title" content="3DHub.ge — 3D Printers & Services in Georgia">
   <meta property="og:description" content="Online store for 3D printers, filament and 3D printing services in Georgia.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://3dhub.ge">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Georgian:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto Sans Georgian:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -32,13 +31,12 @@
   <script>
     function renderPage() {
       const page = getCurrentPage();
-      const isAdmin = page === 'admin' || page.startsWith('admin-');
       const app = document.getElementById('app');
       document.documentElement.lang = state.lang;
 
-      // Admin page — no nav/footer wrapper
-      if (isAdmin) {
-        document.title = '3DHub Admin Panel';
+      // Admin pages — no nav/footer
+      if (page === 'admin') {
+        document.title = '3DHub.ge Admin';
         app.innerHTML = renderAdmin();
         return;
       }
@@ -59,24 +57,21 @@
         default:           content = renderSimplePage(page); break;
       }
 
-      // Set page title
+      // Page titles
       const titles = {
         home: '3DHub.ge — 3D პრინტერები საქართველოში',
-        catalog: `3DHub.ge — ${LANG[state.lang].catPageTitle}`,
-        product: `3DHub.ge — ${PRODUCTS.find(p=>p.id===parseInt(getParam('id')))?.name||'Product'}`,
-        cart: `3DHub.ge — ${LANG[state.lang].cartTitle}`,
-        checkout: `3DHub.ge — ${LANG[state.lang].checkoutTitle}`,
-        services: `3DHub.ge — ${LANG[state.lang].serviceTitle}`,
+        catalog: '3DHub.ge — კატალოგი',
+        cart: '3DHub.ge — კალათა',
+        checkout: '3DHub.ge — შეკვეთა',
+        services: '3DHub.ge — 3D სერვისები',
+        blog: '3DHub.ge — ბლოგი',
+        support: '3DHub.ge — მხარდაჭერა',
       };
-      document.title = titles[page] || '3DHub.ge';
+      const prod = PRODUCTS.find(p => p.id === parseInt(getParam('id')));
+      document.title = page === 'product' && prod ? `3DHub.ge — ${prod.name}` : (titles[page] || '3DHub.ge');
 
       app.innerHTML = renderNav() + `<main>${content}</main>` + renderFooter();
       updateCartCount();
-      initFAQs();
-    }
-
-    function initFAQs() {
-      // FAQs are handled via inline onclick — nothing extra needed
     }
 
     // Handle browser back/forward
