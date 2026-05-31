@@ -414,6 +414,4 @@ function toggleFAQ(i) {
   a.classList.toggle('open');
 }
 
-/* ── INIT ── */
-window.addEventListener('popstate', renderPage);
-document.addEventListener('DOMContentLoaded', renderPage);
+/* renderPage is defined in index.html and called after all scripts load */
