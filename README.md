@@ -83,4 +83,4 @@ Switch with GE/EN button in navbar. Language persists in localStorage.
 - [Tabler Icons](https://tabler.io/icons) via CDN
 - Google Fonts: Outfit + Noto Sans Georgian
 - SPA routing via URL `?page=` params + History API
-- State in localStorage (cart, wishlist, language)
+- State in localStorage (cart, wishlist, language) 
